@@ -1,9 +1,9 @@
 from django.core.management.base import BaseCommand
+from telegram_bot.bot import main  # Botni ishga tushiruvchi funksiya
 
 class Command(BaseCommand):
-    help = 'Start the Telegram bot'
+    help = 'Telegram botni ishga tushirish'
 
-    def handle(self, *args, **kwargs):
-        from telegram_bot.bot import main  # Telegram botning asosiy funksiyasini chaqirish
-        self.stdout.write("Starting Telegram Bot...")
-        main()  # Telegram botni ishga tushurish
+    def handle(self, *args, **options):
+        self.stdout.write(self.style.SUCCESS('Bot ishga tushmoqda...'))
+        main()  # Botni ishga tushirish

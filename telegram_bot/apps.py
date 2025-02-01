@@ -8,13 +8,22 @@ class TelegramBotConfig(AppConfig):
     name = 'telegram_bot'
 
     def ready(self):
-        # Django ilovasi ishga tushganda, botni ishga tushurish
-        thread = threading.Thread(target=self.run_bot)
-        thread.daemon = True  # Django yopilganda thread ham to‘xtashi uchun
-        thread.start()
+        # Faqatgina asosiy Django ilovasi ishga tushganda botni ishga tushurish
+        if not self.is_running_test():
+            thread = threading.Thread(target=self.run_bot)
+            thread.daemon = True  # Django yopilganda thread ham to'xtashi uchun
+            thread.start()
 
     def run_bot(self):
         # Async event loop yaratish va botni ishga tushurish
         loop = asyncio.new_event_loop()
         asyncio.set_event_loop(loop)
-        call_command('start_bot')  # Telegram botni ishga tushirish
+        try:
+            call_command('start_bot')  # Telegram botni ishga tushirish
+        except Exception as e:
+            print(f"Botni ishga tushirishda xatolik yuz berdi: {e}")
+
+    def is_running_test(self):
+        # Test rejimida ishlayotganligini tekshirish
+        import sys
+        return 'test' in sys.argv
